@@ -1,0 +1,7 @@
+============= REGISTRO DE KEYLOGGER =============
+Fecha de generación: 2025-06-03 03:54:16
+=================================================
+Eventos registrados:
+ReturnControl_Lc
+=================================================
+FIN DEL REGISTRO
