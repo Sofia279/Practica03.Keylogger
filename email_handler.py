@@ -5,9 +5,9 @@ def enviar_email(destinatario: str, archivo_adjunto: str, asunto: str = "Registr
    
     try:
         yag = yagmail.SMTP(
-            user="arizdelcylizbeth170@gmail.com",         # cuenta de gmail
+            user="borrardespuesnoapellido@gmail.com",         # cuenta de gmail
            # la contrasena generada en contrasena de aplicacion generada no va funcionar hasta que generes la tuya o hacemos otra xd ajajaj
-            password="",
+            password="btmt ktlp dkdp vyhh",
             host="smtp.gmail.com",
             port=587,
             smtp_starttls=True,
