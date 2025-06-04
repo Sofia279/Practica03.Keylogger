@@ -1,4 +1,3 @@
-#ari
 echo "===== Cleanup: eliminando archivos del keylogger ====="
 
 rm -f keylogger.py

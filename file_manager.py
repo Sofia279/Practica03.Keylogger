@@ -1,10 +1,11 @@
-# ari
-
 from datetime import datetime
 import traceback
 
 def guardar_en_archivo(buffer: str, archivo_output: str = "output.txt") -> str:
-  
+    """
+    Toma todo el contenido acumulado en 'buffer' y genera un archivo de texto
+    con una cabecera que incluye la fecha y separadores. Devuelve el nombre del archivo creado.
+    """
     try:
         contenido = "============= REGISTRO DE KEYLOGGER =============\n"
         contenido += f"Fecha de generación: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
