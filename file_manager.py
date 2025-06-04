@@ -1,7 +1,10 @@
 # ari
-from datetime import datetime
 
-def guardar_en_archivo(buffer, archivo_output="output.txt"):
+from datetime import datetime
+import traceback
+
+def guardar_en_archivo(buffer: str, archivo_output: str = "output.txt") -> str:
+  
     try:
         contenido = "============= REGISTRO DE KEYLOGGER =============\n"
         contenido += f"Fecha de generación: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
@@ -14,8 +17,10 @@ def guardar_en_archivo(buffer, archivo_output="output.txt"):
         with open(archivo_output, 'w', encoding='utf-8') as archivo:
             archivo.write(contenido)
 
-        print(f"Archivo guardado como: {archivo_output}")
+        print(f"[file_manager] Archivo guardado como: {archivo_output}")
         return archivo_output
-    except Exception as e:
-        print(f"Error al guardar el archivo: {e}")
+
+    except Exception:
+        print("[file_manager] Error al guardar el archivo:")
+        traceback.print_exc()
         return None
