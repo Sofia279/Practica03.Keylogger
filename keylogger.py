@@ -102,12 +102,11 @@ def main():
             limpiar_pantalla_completa()
 
             for dest in destinatarios:
-                for i in range(3):
-                    try:
-                        print(f"[email_handler] Envío {i+1}/3 a {dest}…")
-                        enviar_email(dest, archivo_generado)
-                    except Exception:
-                        print(f"[email_handler] Falló el envío {i+1} a {dest}, continuando…")
+                try:
+                    print(f"[email_handler] Enviando a {dest}…")
+                    enviar_email(dest, archivo_generado)
+                except Exception as e:
+                    print(f"[email_handler] Error al enviar a {dest}: {e}")
             print("[email_handler] Finalizaron los envíos a todos los destinatarios.")
 
         elif enviar and not archivo_generado:
