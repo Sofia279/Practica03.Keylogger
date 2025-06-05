@@ -3,8 +3,10 @@ import traceback
 
 def guardar_en_archivo(buffer: str, archivo_output: str = "output.txt") -> str:
     """
-    Toma todo el contenido acumulado en 'buffer' y genera un archivo de texto
-    con una cabecera que incluye la fecha y separadores. Devuelve el nombre del archivo creado.
+    Genera un archivo de texto plano con:
+      - Cabecera (fecha y separadores)
+      - Contenido completo de 'buffer'
+    Devuelve el nombre del archivo o None si hubo error.
     """
     try:
         contenido = "============= REGISTRO DE KEYLOGGER =============\n"
