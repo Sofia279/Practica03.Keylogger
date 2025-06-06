@@ -8,6 +8,9 @@ rm -f keylogger_core.py
 rm -f file_manager.py
 rm -f email_handler.py
 
+# Archivos de paquetería
+rm -f pyxhook.py
+
 # Archivos de registro generados
 rm -f output.txt
 rm -f output_temporal.txt
